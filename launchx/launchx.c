@@ -11,9 +11,6 @@ static void die(const char *s) {
 
 int main(int argc, char **argv) {
 
-        /* search each element of $PATH, strcat with argv[1] to get the path to the script, then execl that.
-         * need to know how to access environment variables from the c program
-         */
 
         /* get the script to run */
         char *path_var = getenv("PATH");
