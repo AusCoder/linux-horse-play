@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 static void die(const char *s) {
         perror(s);
@@ -14,8 +15,36 @@ int main(int argc, char **argv) {
          * need to know how to access environment variables from the c program
          */
 
-        /* the script to run */
-        char *scriptname = argv[1];
+        /* get the script to run */
+        char *path_var = getenv("PATH");
+        char *path = strtok(path_var, ":");
+        char scriptpath[1000];
+        strcpy(scriptpath, path);
+        while ( 1 ) {
+                strcat(scriptpath, "/");
+                strcat(scriptpath, argv[1]);
+                //printf("%s\n", scriptpath);
+        
+                if (!access(scriptpath, F_OK)) {
+                        break;
+                }
+
+                path = strtok(NULL, ":");
+                if (path == NULL) {
+                        /* after checking everything in PATH, try PWD, if that fails program doesnt exist */
+                        strcpy(scriptpath, getenv("PWD"));
+                        strcat(scriptpath, "/");
+                        strcat(scriptpath, argv[1]);
+                        if (!access(scriptpath, F_OK)) {
+                                break;
+                        }
+
+                        fprintf(stderr, "error: %s not found\n", argv[1]);
+                        return 1;
+                }
+                strcpy(scriptpath, path);
+        }
+
         pid_t pid;
         int status;
 
@@ -27,7 +56,7 @@ int main(int argc, char **argv) {
         }
         /* child process runs the script */
         else if (pid == 0) {
-                execl(scriptname, scriptname, (char *)0);
+                execl(scriptpath, scriptpath, (char *)0);
                 die("execl failed");
         }
         /* parent process waits for the child to return */
@@ -36,4 +65,5 @@ int main(int argc, char **argv) {
                         die("waitpid failed");
         }
         return 0;
+
 }
