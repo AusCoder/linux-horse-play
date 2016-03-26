@@ -1,0 +1,7 @@
+iw dev  		// shows wireless interface
+iw dev wls1 link 	// check if wls1 is connected
+iw dev wls1 scan 	// scan for available networks, piping into less allows you to see more
+iw dev wls1 connect "Columbia University"	// to connect to columbia wifi
+ip link set wls1 up	// set the wireless device to up
+ping www.google.com 	// our bread and butter
+dhcpcd			// if not connected to internet
