@@ -1,7 +1,25 @@
+lspci -k                // check if drivers for device are installed
 iw dev  		// shows wireless interface
 iw dev wls1 link 	// check if wls1 is connected
 iw dev wls1 scan 	// scan for available networks, piping into less allows you to see more
 iw dev wls1 connect "Columbia University"	// to connect to columbia wifi
 ip link set wls1 up	// set the wireless device to up
 ping www.google.com 	// our bread and butter
-dhcpcd			// if not connected to internet
+dhcpcd wls1		// if not connected to internet
+
+WPA for wifi networks
+first start wpa_supplicant
+# wpa_supplicant -B -D nl80211,wext -i wls1 -c /etc/wpa_supplicant/example.conf
+
+then to enter cli configuration
+# wpa_cli
+> scan
+> scan_results
+> add_network
+0
+> set_network 0 ssid "MYSSID"
+> set_network 0 psk "passphrase"
+> enable_network 0
+> save_config
+
+# dhcpcd wls1         // get an ip address

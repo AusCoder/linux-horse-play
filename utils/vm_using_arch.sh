@@ -17,6 +17,8 @@ rdesktop -a 16 -K localhost:3389 &
 # power off the vm
 # VBoxManage controlvm $VM poweroff
 
+# take a snapshot of the vm
+#VBoxManage snapshot $VM take archvm1
 
 # unmount the vm hdd
 # umount /home/archie/archvm
